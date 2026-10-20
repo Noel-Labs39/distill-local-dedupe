@@ -1,11 +1,16 @@
-# Mac・Windows・Linux 向けを組み立てて、リリースに添付する
-#   ・v で始まるタグ（例：v0.1.0）を付けたとき：その版のリリースを作って添付（公証・署名なし）
+# Mac・Windows・Linux 向けを組み立てて、リリースに添付する（公証・署名なし）
+#   ・main に入ったとき：src-tauri/tauri.conf.json の version のリリース（v0.1.0 など）がまだなければ作って添付
 #   ・PR・手動：組み立てだけ行い、Actions に保存
 name: Build
 
 on:
   push:
-    tags: ['v*']
+    branches: [main]
+    paths:
+      - src/**
+      - src-tauri/**
+      - package.json
+      - .github/workflows/build.yml
   pull_request:
   workflow_dispatch: {}
 
@@ -13,7 +18,23 @@ permissions:
   contents: write
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      release: ${{ steps.v.outputs.release }}
+      tag: ${{ steps.v.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: v
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          v=$(node -p "require('./src-tauri/tauri.conf.json').version")
+          echo "tag=v$v" >> "$GITHUB_OUTPUT"
+          if [ "${{ github.event_name }}" = "push" ] && ! gh release view "v$v" >/dev/null 2>&1; then echo "release=true" >> "$GITHUB_OUTPUT"; else echo "release=false" >> "$GITHUB_OUTPUT"; fi
+
   build:
+    needs: check
     strategy:
       fail-fast: false
       matrix:
@@ -52,14 +73,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '' }}
-          releaseName: 'Distill Local Dedupe ${{ github.ref_name }}'
+          tagName: ${{ needs.check.outputs.release == 'true' && needs.check.outputs.tag || '' }}
+          releaseName: 'Distill Local Dedupe ${{ needs.check.outputs.tag }}'
           releaseBody: 'Mac は .dmg（または .app.tar.gz）、Windows は .msi / .exe、Linux は .AppImage / .deb を使ってください。公証・署名をしていないため、初回は OS の確認が出ます（README 参照）。'
           releaseDraft: false
           args: ${{ matrix.args }}
 
       - uses: actions/upload-artifact@v4
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ needs.check.outputs.release != 'true' }}
         with:
           name: bundle-${{ matrix.platform }}
           path: |
