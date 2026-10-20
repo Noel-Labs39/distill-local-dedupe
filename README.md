@@ -43,7 +43,7 @@ npm run dev     # 開発用に起動
 npm run build   # 配布用に組み立て
 ```
 
-Rust と、各 OS の [Tauri の準備](https://v2.tauri.app/start/prerequisites/) が必要です。`v` で始まるタグ（例：`v0.1.0`）を付けて push すると、GitHub Actions が 3 つの OS 向けを組み立ててリリースに添付します。
+Rust と、各 OS の [Tauri の準備](https://v2.tauri.app/start/prerequisites/) が必要です。`src-tauri/tauri.conf.json` の `version` を上げて main に入れると、GitHub Actions が 3 つの OS 向けを組み立てて、その版のリリース（例：`v0.1.0`）を作って添付します。
 
 ## ライセンス
 
