@@ -1,0 +1,13 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "メイン画面で使う権限（フォルダの選択、Finder・エクスプローラーで場所を開く）",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "dialog:allow-open",
+    "dialog:allow-ask",
+    "dialog:allow-message",
+    "opener:allow-reveal-item-in-dir"
+  ]
+}

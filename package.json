@@ -1,0 +1,14 @@
+{
+  "name": "distill-local-dedupe",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Distill Local Dedupe — パソコンのフォルダの重複を見比べて整理するアプリ",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.1.0"
+  }
+}

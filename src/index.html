@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Distill Local Dedupe</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="brand"><img src="logo.svg" alt=""><div class="wm"><small>DISTILL</small><b>Local Dedupe</b></div><span class="ver" id="ver"></span></div>
+    <div class="dirs" id="dirs"></div>
+    <button id="add">＋ フォルダを追加</button>
+    <button class="pri" id="scan" disabled>読み込む</button>
+  </header>
+  <div class="tb">
+    <label>まとめ方 <select id="mode"><option value="name">同じファイル名</option><option value="id">同じ品番（作品）</option></select></label>
+    <label><input type="checkbox" id="verify" checked> 中身も確かめる（先頭・末尾 4MB）</label>
+    <label>小さいファイルは除く <select id="min"><option value="0">しない</option><option value="10485760" selected>10MB 未満</option><option value="104857600">100MB 未満</option></select></label>
+    <input id="q" type="search" placeholder="絞り込み（名前・場所）">
+  </div>
+  <main id="main"><div class="empty"><b>整理したいフォルダを追加して「読み込む」を押してください</b><span>読むだけで、ファイルは何も変更しません。外付けディスクやネットワークのフォルダも選べます。</span></div></main>
+  <div class="bar" id="bar" hidden><span id="sum"></span><span class="sp"></span><button class="danger" id="trash">チェックしたものをゴミ箱へ</button></div>
+  <footer id="status">準備できました</footer>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
